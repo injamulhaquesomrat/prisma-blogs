@@ -56,6 +56,7 @@ const getAllPost = async (req: Request, res: Response) => {
     // const sortBy = req.query.sortBy as string | undefined;
     // const sortOrder = req.query.sortOrder as string | undefined;
 
+    // using helper function
     const options = paginationSortingHelper(req.query);
 
     const { page, limit, skip, sortBy, sortOrder } = options;
@@ -85,7 +86,29 @@ const getAllPost = async (req: Request, res: Response) => {
   }
 };
 
+const getPostById = async (req: Request, res: Response) => {
+  try {
+    const postId = req.params.postId;
+
+    // optional + type safety
+    if (!postId) {
+      throw new Error("Post id is required");
+    }
+
+    const result = await postService.getPostById(postId);
+    res
+      .status(200)
+      .json({ message: "Post retreived successfully", data: result });
+  } catch (error) {
+    res.status(400).json({
+      error: "Post retreiving failed",
+      details: error,
+    });
+  }
+};
+
 export const postController = {
   createPost,
   getAllPost,
+  getPostById,
 };
