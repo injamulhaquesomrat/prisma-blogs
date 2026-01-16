@@ -47,12 +47,25 @@ const getAllPost = async (req: Request, res: Response) => {
 
     const authorId = req.query.authorId as string | undefined;
 
+    const page = Number(req.query.page ?? 1);
+    const limit = Number(req.query.limit ?? 5);
+
+    const skip = (page - 1) * limit;
+
+    const sortBy = req.query.sortBy as string | undefined;
+    const sortOrder = req.query.sortOrder as string | undefined;
+
     const result = await postService.getAllPosts({
       search: searchString,
       tags,
       isFeatured,
       status,
       authorId,
+      page,
+      limit,
+      skip,
+      sortBy,
+      sortOrder,
     });
 
     res.status(201).json({
