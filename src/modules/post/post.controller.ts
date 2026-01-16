@@ -28,9 +28,24 @@ const getAllPost = async (req: Request, res: Response) => {
 
     const tags = req.query.tags ? (req.query.tags as string).split(",") : [];
 
+    // true or false and default false in the spelling is also wrong
+    // const isFeatured = req.query.isFeatured
+    //   ? req.query.isFeatured === "true"
+    //   : undefined;
+
+    // only true or false else default false
+    const isFeatured = req.query.isFeatured
+      ? req.query.isFeatured === "true"
+        ? true
+        : req.query.isFeatured === "false"
+        ? false
+        : undefined
+      : undefined;
+
     const result = await postService.getAllPosts({
       search: searchString,
       tags,
+      isFeatured,
     });
 
     res.status(201).json({
