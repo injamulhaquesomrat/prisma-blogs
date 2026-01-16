@@ -3,7 +3,6 @@ import { postService } from "./post.services";
 
 const createPost = async (req: Request, res: Response) => {
   try {
-    console.log(req.user);
     if (!req.user) {
       return res.status(401).json({
         error: "Unauthorized",
@@ -14,7 +13,6 @@ const createPost = async (req: Request, res: Response) => {
       req.user.id as string
     );
     res.status(201).json(result);
-    console.log("hitting controller");
   } catch (error) {
     res.status(400).json({
       error: "Post creation failed",
@@ -25,7 +23,16 @@ const createPost = async (req: Request, res: Response) => {
 
 const getAllPost = async (req: Request, res: Response) => {
   try {
-    const result = await postService.getAllPosts();
+    const { search } = req.query;
+    const searchString = typeof search === "string" ? search : undefined;
+
+    const tags = req.query.tags ? (req.query.tags as string).split(",") : [];
+
+    const result = await postService.getAllPosts({
+      search: searchString,
+      tags,
+    });
+
     res.status(201).json({
       message: "All posts retreived successfully",
       posts: result,
