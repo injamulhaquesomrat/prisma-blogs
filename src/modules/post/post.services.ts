@@ -21,14 +21,17 @@ const getAllPosts = async ({
   tags,
   isFeatured,
   status,
+  authorId,
 }: {
   search?: string | undefined;
   tags: string[] | [];
   isFeatured: boolean | undefined;
   status: PostStatus | undefined;
+  authorId: string | undefined;
 }) => {
   const andConditions: PostWhereInput[] = [];
 
+  // string search
   if (search) {
     andConditions.push({
       OR: [
@@ -53,6 +56,7 @@ const getAllPosts = async ({
     });
   }
 
+  // array of string search
   if (tags.length > 0) {
     andConditions.push({
       tags: {
@@ -61,15 +65,24 @@ const getAllPosts = async ({
     });
   }
 
+  // boolean search
   if (typeof isFeatured === "boolean") {
     andConditions.push({
       isFeatured,
     });
   }
 
+  // enum value search
   if (status) {
     andConditions.push({
       status,
+    });
+  }
+
+  // string search
+  if (authorId) {
+    andConditions.push({
+      authorId,
     });
   }
 
