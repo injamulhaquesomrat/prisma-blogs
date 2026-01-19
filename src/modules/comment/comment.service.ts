@@ -6,14 +6,14 @@ const createComment = async (payload: {
   postId: string;
   parentId?: string;
 }) => {
-  const postData = await prisma.post.findUniqueOrThrow({
+  await prisma.post.findUniqueOrThrow({
     where: {
       id: payload.postId,
     },
   });
 
   if (payload.parentId) {
-    const parentData = await prisma.comment.findUniqueOrThrow({
+    await prisma.comment.findUniqueOrThrow({
       where: {
         id: payload.parentId,
       },
@@ -25,6 +25,24 @@ const createComment = async (payload: {
   });
 };
 
+const getCommentById = async (commentId: string) => {
+  return await prisma.comment.findUnique({
+    where: {
+      id: commentId,
+    },
+    include: {
+      post: {
+        select: {
+          id: true,
+          title: true,
+          views: true,
+        },
+      },
+    },
+  });
+};
+
 export const commentService = {
   createComment,
+  getCommentById,
 };
