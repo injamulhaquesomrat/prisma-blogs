@@ -6,6 +6,8 @@ const router = express.Router();
 
 router.get("/", postController.getAllPost);
 
+router.get("/author-posts", postController.getUserPosts);
+
 router.get("/:postId", auth(UserRole.USER), postController.getPostById);
 
 router.post("/", auth(UserRole.USER), postController.createPost);

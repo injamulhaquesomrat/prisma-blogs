@@ -12,7 +12,7 @@ const createPost = async (req: Request, res: Response) => {
     }
     const result = await postService.createPost(
       req.body,
-      req.user.id as string
+      req.user.id as string,
     );
     res.status(201).json(result);
   } catch (error) {
@@ -40,8 +40,8 @@ const getAllPost = async (req: Request, res: Response) => {
       ? req.query.isFeatured === "true"
         ? true
         : req.query.isFeatured === "false"
-        ? false
-        : undefined
+          ? false
+          : undefined
       : undefined;
 
     const status = req.query.status as PostStatus | undefined;
@@ -107,8 +107,23 @@ const getPostById = async (req: Request, res: Response) => {
   }
 };
 
+const getUserPosts = async (req: Request, res: Response) => {
+  try {
+    const authorId = req.user?.id;
+    const result = await postService.getUserPosts(authorId as string);
+
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(400).json({
+      error: "Post retriving failed",
+      details: error,
+    });
+  }
+};
+
 export const postController = {
   createPost,
   getAllPost,
   getPostById,
+  getUserPosts
 };
